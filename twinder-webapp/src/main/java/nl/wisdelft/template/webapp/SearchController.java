@@ -3,8 +3,12 @@
  */
 package nl.wisdelft.template.webapp;
 
+import java.io.IOException;
+
+import nl.wisdelft.twinder.io.MongoDBUtility;
 import nl.wisdelft.twinder.lucene.Searcher;
 
+import org.apache.lucene.document.Document;
 import org.apache.lucene.search.TopDocs;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +42,20 @@ public class SearchController {
 		
 		Searcher searcher = new Searcher();
 		TopDocs tweets = searcher.search(srequest.getQuery());
-		model.addAttribute("tweets", tweets.scoreDocs);
+//		model.addAttribute("tweets", tweets.scoreDocs);
+		Object[][] contents = new String[tweets.scoreDocs.length][2];
+		for (int i = 0; i < contents.length; i++) {
+			try {
+				Document doc = searcher.getDocument(tweets.scoreDocs[i].doc);
+				contents[i][0] = doc.get("id");
+				contents[i][1] = (String) MongoDBUtility.getTweet(Long.parseLong((String) contents[i][0])).get("content");
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		model.addAttribute("contents", contents);
 		return "results";
 	}
 }

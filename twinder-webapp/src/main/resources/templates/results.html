@@ -14,10 +14,9 @@
 	<h1>The search results</h1>
     <table>
     	<tbody>
-    		<tr th:each="tweet : ${tweets}">
-				<td th:text="${tweet.doc}">doc</td>
-				<td th:text="${tweet.score}">score</td>
-				<td th:text="${tweet.shardIndex}">shareIndex</td>
+    		<tr th:each="content : ${contents}">
+				<td th:text="${content[0]}">id</td>
+				<td th:text="${content[1]}">content</td>
             </tr>
 		</tbody>
 	</table>
