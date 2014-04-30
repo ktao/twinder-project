@@ -4,11 +4,13 @@
 package nl.wisdelft.template.webapp;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author ktao
  *
  */
+@Document(collection="tweets_001")
 public class Tweet {
 	@Id
 	private String mid;

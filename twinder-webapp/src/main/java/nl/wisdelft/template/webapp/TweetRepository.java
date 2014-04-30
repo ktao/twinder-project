@@ -3,8 +3,6 @@
  */
 package nl.wisdelft.template.webapp;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
