@@ -4,6 +4,7 @@
 package nl.wisdelft.template.webapp;
 
 import java.io.IOException;
+import java.util.Date;
 
 import nl.wisdelft.twinder.io.MongoDBUtility;
 import nl.wisdelft.twinder.lucene.Searcher;
@@ -25,6 +26,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class SearchController {
 	
 	/**
+	 * The index is just the search page
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/",method=RequestMethod.GET) 
+    public String index(Model model) {
+		model.addAttribute("srequest", new SearchRequest()); // todo
+		return "search";
+	}
+	
+	/**
 	 * The default page for starting a search
 	 * @param model
 	 * @return
@@ -37,9 +49,10 @@ public class SearchController {
 	
 	@RequestMapping(value="/search", method=RequestMethod.POST)
 	public String searchForm(@ModelAttribute SearchRequest srequest, Model model) {
-		srequest.setQuery(srequest.getQuery() + " again");
+		srequest.setQuery(srequest.getQuery());
 		model.addAttribute("srequest", srequest); // get the raw query
 		
+		Date start = new Date();
 		Searcher searcher = new Searcher();
 		TopDocs tweets = searcher.search(srequest.getQuery());
 //		model.addAttribute("tweets", tweets.scoreDocs);
@@ -56,6 +69,10 @@ public class SearchController {
 			}
 		}
 		model.addAttribute("contents", contents);
+		Date end = new Date();
+		double time = (double)(end.getTime() - start.getTime()) / 1000.000;
+		model.addAttribute("time", time);
+		model.addAttribute("number", contents.length);
 		return "results";
 	}
 }
