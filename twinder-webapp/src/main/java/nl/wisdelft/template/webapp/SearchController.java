@@ -8,6 +8,7 @@ import java.util.Date;
 
 import nl.wisdelft.twinder.io.MongoDBUtility;
 import nl.wisdelft.twinder.lucene.Searcher;
+import nl.wisdelft.twinder.relevance.SearchWithRelevanceEstimation;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.TopDocs;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.mongodb.BasicDBObject;
 
 /**
  * @author ktao
@@ -47,8 +50,9 @@ public class SearchController {
 		return "search";
 	}
 	
-	@RequestMapping(value="/search", method=RequestMethod.POST)
-	public String searchForm(@ModelAttribute SearchRequest srequest, Model model) {
+//	@RequestMapping(value="/search", method=RequestMethod.POST)
+	@Deprecated
+	public String searchFormV1_0(@ModelAttribute SearchRequest srequest, Model model) {
 		srequest.setQuery(srequest.getQuery());
 		model.addAttribute("srequest", srequest); // get the raw query
 		
@@ -69,6 +73,40 @@ public class SearchController {
 			}
 		}
 		model.addAttribute("contents", contents);
+		Date end = new Date();
+		double time = (double)(end.getTime() - start.getTime()) / 1000.000;
+		model.addAttribute("time", time);
+		model.addAttribute("number", contents.length);
+		return "results";
+	}
+	
+	@RequestMapping(value="/search", method=RequestMethod.POST)
+	public String searchForm(@ModelAttribute SearchRequest srequest, Model model) {
+		srequest.setQuery(srequest.getQuery());
+		model.addAttribute("srequest", srequest); // get the raw query
+		
+		Date start = new Date();
+		SearchWithRelevanceEstimation swre = new SearchWithRelevanceEstimation();
+		BasicDBObject[] results = swre.search(srequest.getQuery());
+		Object[][] contents = new String[results.length][5]; // what is needed?
+//		boolean[] relevance = new boolean[results.length];
+		for (int i = 0; i < contents.length; i++) {
+			try {
+				BasicDBObject user = (BasicDBObject)results[i].get("user");
+				contents[i][0] = Long.toString(results[i].getLong("id"));
+				contents[i][1] = results[i].getString("content");
+				contents[i][2] = user.getString("screenName");
+				contents[i][3] = user.getString("profile_image_url");
+				contents[i][4] = Boolean.toString(results[i].getBoolean("relevance"));
+//				relevance[i] = results[i].getBoolean("relevance");
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				System.out.println(results[i]);
+			}
+		}
+		model.addAttribute("contents", contents);
+//		model.addAttribute("relevance", relevance);
 		Date end = new Date();
 		double time = (double)(end.getTime() - start.getTime()) / 1000.000;
 		model.addAttribute("time", time);
