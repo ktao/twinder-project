@@ -6,6 +6,7 @@ package nl.wisdelft.template.webapp;
 import java.io.IOException;
 import java.util.Date;
 
+import nl.wisdelft.twinder.PrototypeSearch;
 import nl.wisdelft.twinder.io.MongoDBUtility;
 import nl.wisdelft.twinder.lucene.Searcher;
 
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.mongodb.BasicDBObject;
 
 /**
  * @author ktao
@@ -53,19 +56,21 @@ public class SearchController {
 		model.addAttribute("srequest", srequest); // get the raw query
 		
 		Date start = new Date();
-		Searcher searcher = new Searcher();
-		TopDocs tweets = searcher.search(srequest.getQuery());
-//		model.addAttribute("tweets", tweets.scoreDocs);
-		Object[][] contents = new String[tweets.scoreDocs.length][2];
+		PrototypeSearch search = new PrototypeSearch();
+		BasicDBObject[] results = search.search(srequest.getQuery());
+		
+		Object[][] contents = new String[results.length][4];
 		for (int i = 0; i < contents.length; i++) {
 			try {
-				Document doc = searcher.getDocument(tweets.scoreDocs[i].doc);
-				contents[i][0] = doc.get("id");
-				contents[i][1] = (String) MongoDBUtility.getTweet(Long.parseLong((String) contents[i][0])).get("content");
+				BasicDBObject user = (BasicDBObject)results[i].get("user");
+				contents[i][0] = Long.toString(results[i].getLong("id"));
+				contents[i][1] = results[i].getString("content");
+				contents[i][2] = user.getString("screenName");
+				contents[i][3] = user.getString("profile_image_url");
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (NullPointerException e) {
+				System.out.println(results[i]);
 			}
 		}
 		model.addAttribute("contents", contents);
