@@ -45,21 +45,21 @@
 	<div class="row result-tweet" th:each="content : ${contents}">
 		<div class="col-md-1"></div>
 		<div class="col-md-1"> <img src="resources/images/photo.jpg" width="64" height="64" /> </div>
-		<div class="col-md-9">
+		<div class="col-md-8">
 			<p class="tweet-nickname" th:text="${content[2]}">Twitter User</p>
 			<p th:text="${content[1]}">contents</p>
-			<p class="text-right"><img th:with="rele=${content[4]}=='true'" src="relevance.png" th:src="${rele} ? 'resources/images/check.png' : 'resources/images/cross.png'" width="32" height="32" /></p>
 			<hr class="result-seperate-line" />
 		</div>
+		<div class="col-md-1"> <p class="text-right"><img th:with="rele=${content[4]}=='true'" src="relevance.png" th:src="${rele} ? 'resources/images/check.png' : 'resources/images/cross.png'" width="32" height="32" /></p> </div>
 		<div class="col-md-1"></div>
 	</div>
 </div>
 
-<!-- /.row --> 
+<!-- /.row -->
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="resources/js/jquery-2.1.0.min.js"></script> 
-<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="resources/js/jquery-2.1.0.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="resources/js/bootstrap.min.js"></script>
 </body>
 </html>
