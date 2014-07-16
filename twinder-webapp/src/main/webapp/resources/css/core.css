@@ -67,3 +67,12 @@
 .result-summary-text {
 	color: #999;
 }
+.duplicate-true {
+	background-color: rgba(255,0,0,0.5);
+}
+.duplicate-origin {
+	background-color: rgba(0,255,255,0.5);
+}
+.duplicate-false {
+	color: #000000;
+}

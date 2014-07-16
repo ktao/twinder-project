@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Twinder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<!-- Bootstrap -->
+<link rel="stylesheet" href="resources/css/bootstrap.min.css" />
+<link rel="stylesheet" href="resources/css/core.css" />
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+        <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="result-body">
+<div class="navbar navbar-fixed-top result-head main-back">
+	<div class="navbar-inner">
+		<div class="container">
+			<form class="navbar-form result-head-form" role="form" action="#" th:action="@{/nddtselect}" th:object="${tselection}" method="POST">
+				<div class="form-group"> <img src="resources/images/twinder-logo-sm.png" /> </div>
+				<div class="form-group">
+					<input type="text" class="form-control input-sm result-search-input" value="Haiti Aristide return" />
+					<!--<select class="form-control input-sm result-search-input" name="tselection" th:field="*{topicId}" >
+						<option th:each="sopt:${topics.entrySet()}" th:value="${sopt.key}" th:text="${sopt.value}">Topic</option>
+					</select>-->
+				</div>
+				<div class="form-group">
+					<button class="btn btn-sm result-search-btn" type="button"><img src="resources/images/ico-search-sm.png"/></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="container result-container">
+	<div class="row">
+		<div class="col-md-12">&nbsp;</div>
+	</div>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-11">
+			<p class="result-summary-text">Displaying <span th:text="${number}">number</span> tweets (<span th:text="${time}">time</span> seconds)</p>
+		</div>
+	</div>
+	<div class="row result-tweet" th:each="content : ${contents}">
+		<div class="col-md-1"></div>
+		<div class="col-md-1"> <img src="resources/images/photo.jpg" width="64" height="64" /> </div>
+		<div class="col-md-9">
+			<p class="tweet-nickname" th:text="${content[0]}">Twitter User</p>
+			<p th:class="'duplicate-' + ${content[2]}" th:text="${content[1]}">contents</p>
+			<p class="text-right"><img th:with="rele=${content[2]}=='true'" src="relevance.png" th:src="${rele} ? 'resources/images/blank.png' : 'resources/images/blank.png'" width="32" height="32" /></p>
+			<hr class="result-seperate-line" />
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+
+<!-- /.row --> 
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script src="resources/js/jquery-2.1.0.min.js"></script> 
+<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<script src="resources/js/bootstrap.min.js"></script>
+</body>
+</html>
